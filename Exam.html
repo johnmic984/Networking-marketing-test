@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FHG Neolife Network Marketing Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --dark: #0D0D0D;
+    --dark2: #181818;
+    --dark3: #232323;
+    --card: #1E1E1E;
+    --border: #2E2E2E;
+    --text: #F0EDE6;
+    --muted: #888;
+    --green: #3DAA6E;
+    --red: #C0392B;
+    --accent: #C9A84C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+
+  /* ── WELCOME ── */
+  #welcome-screen {
+    background: radial-gradient(ellipse at 60% 20%, #2a1f06 0%, var(--dark) 65%);
+    text-align: center;
+  }
+  .logo-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+  .logo-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #8B6914);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900; color: #fff;
+    box-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--gold); letter-spacing: 2px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 6vw, 52px); font-weight: 900; line-height: 1.1; margin-bottom: 14px; }
+  h1 span { color: var(--gold); }
+  .subtitle { color: var(--muted); font-size: 16px; margin-bottom: 40px; }
+  .info-cards { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+  .info-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 120px;
+  }
+  .info-card .val { font-size: 28px; font-weight: 700; color: var(--gold); font-family: 'Playfair Display', serif; }
+  .info-card .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .name-block { width: 100%; max-width: 420px; margin-bottom: 28px; text-align: left; }
+  .name-block label { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; }
+  .name-block input {
+    width: 100%; padding: 14px 18px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 16px; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color 0.2s;
+  }
+  .name-block input:focus { border-color: var(--gold); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), #8B6914);
+    color: #fff; border: none; padding: 16px 48px;
+    border-radius: 50px; font-size: 16px; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.5); }
+
+  /* ── TEST ── */
+  #test-screen { justify-content: flex-start; padding: 0; }
+  .test-header {
+    width: 100%; background: var(--dark2); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .test-header .brand { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 16px; font-weight: 700; }
+  .timer-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--dark3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 16px;
+    font-size: 20px; font-weight: 700; font-family: 'Playfair Display', serif;
+    color: var(--gold);
+  }
+  .timer-box.warning { color: #e67e22; border-color: #e67e22; }
+  .timer-box.danger { color: var(--red); border-color: var(--red); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .student-name-tag { font-size: 13px; color: var(--muted); }
+
+  .test-body { width: 100%; max-width: 800px; margin: 0 auto; padding: 32px 24px 120px; }
+  .progress-bar { width: 100%; background: var(--border); border-radius: 99px; height: 4px; margin-bottom: 28px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 99px; transition: width 0.4s; }
+  .q-counter { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 6px; }
+  .q-text { font-size: clamp(16px, 3vw, 20px); font-weight: 500; line-height: 1.6; margin-bottom: 28px; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; cursor: pointer;
+    transition: all 0.2s; font-size: 15px;
+  }
+  .option:hover { border-color: var(--gold); background: #231f0e; }
+  .option.selected { border-color: var(--gold); background: #231f0e; }
+  .option .opt-letter {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--muted); transition: all 0.2s;
+  }
+  .option.selected .opt-letter { background: var(--gold); color: #fff; }
+
+  .nav-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--dark2); border-top: 1px solid var(--border);
+    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .btn-nav {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 28px; border-radius: 50px;
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-nav:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .btn-nav:disabled { opacity: 0.3; cursor: default; }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--green), #27784d);
+    color: #fff; border: none; padding: 12px 32px;
+    border-radius: 50px; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  .q-dots {
+    display: flex; flex-wrap: wrap; gap: 6px; max-width: 400px;
+  }
+  .q-dot {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border);
+    font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted); transition: all 0.15s;
+  }
+  .q-dot.answered { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .q-dot.current { border-color: var(--text); color: var(--text); }
+
+  /* ── RESULT ── */
+  #result-screen {
+    background: radial-gradient(ellipse at 50% 0%, #1a1500 0%, var(--dark) 70%);
+    text-align: center;
+  }
+  .trophy { font-size: 72px; margin-bottom: 16px; }
+  .result-name { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
+  .score-big { font-family: 'Playfair Display', serif; font-size: clamp(56px, 15vw, 100px); font-weight: 900; color: var(--gold); line-height: 1; }
+  .score-denom { font-size: 24px; color: var(--muted); margin-bottom: 8px; }
+  .grade-badge {
+    display: inline-block; padding: 8px 28px; border-radius: 50px;
+    font-size: 18px; font-weight: 700; margin: 20px 0 10px;
+    letter-spacing: 1px;
+  }
+  .grade-A { background: rgba(61,170,110,0.2); color: var(--green); border: 1px solid var(--green); }
+  .grade-B { background: rgba(201,168,76,0.2); color: var(--gold); border: 1px solid var(--gold); }
+  .grade-C { background: rgba(230,126,18,0.15); color: #e67e22; border: 1px solid #e67e22; }
+  .grade-F { background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid var(--red); }
+  .result-msg { color: var(--muted); font-size: 15px; max-width: 380px; margin: 0 auto 32px; line-height: 1.6; }
+  .result-details { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+  .r-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; min-width: 120px; }
+  .r-card .rv { font-size: 26px; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .r-card .rl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .email-form { width: 100%; max-width: 420px; margin-bottom: 20px; text-align: left; }
+  .email-form label { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .email-form input {
+    width: 100%; padding: 12px 16px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; color: var(--text);
+    font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; margin-bottom: 10px;
+  }
+  .email-form input:focus { border-color: var(--gold); }
+  .email-status { font-size: 13px; margin-top: 8px; padding: 10px; border-radius: 8px; }
+  .email-status.sending { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .email-status.sent { background: rgba(61,170,110,0.1); color: var(--green); }
+  .email-status.error { background: rgba(192,57,43,0.1); color: var(--red); }
+
+  @media (max-width: 600px) {
+    .q-dots { max-width: 280px; }
+    .info-cards { gap: 10px; }
+    .info-card { min-width: 90px; padding: 12px 16px; }
+    .info-card .val { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div id="welcome-screen" class="screen active">
+  <div class="logo-bar">
+    <div class="logo-circle">FHG</div>
+    <div class="logo-text">NEOLIFE GLOBAL</div>
+  </div>
+  <h1>Network Marketing<br><span>Knowledge Test</span></h1>
+  <p class="subtitle">Compensation Plan · Terminology · Mindset · Stages</p>
+  <div class="info-cards">
+    <div class="info-card"><div class="val">100</div><div class="lbl">Questions</div></div>
+    <div class="info-card"><div class="val">50</div><div class="lbl">Minutes</div></div>
+    <div class="info-card"><div class="val">MCQ</div><div class="lbl">+ True/False</div></div>
+  </div>
+  <div class="name-block">
+    <label>Your Full Name</label>
+    <input type="text" id="student-name" placeholder="Enter your full name..." autocomplete="name" />
+  </div>
+  <button class="btn-gold" onclick="startTest()">Begin Test →</button>
+</div>
+
+<!-- TEST -->
+<div id="test-screen" class="screen">
+  <div class="test-header">
+    <div class="brand">FHG · Neolife Test</div>
+    <div class="timer-box" id="timer">50:00</div>
+    <div class="student-name-tag" id="header-name"></div>
+  </div>
+  <div class="test-body">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="q-counter" id="q-counter">Question 1 of 100</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options-container"></div>
+  </div>
+  <div class="nav-footer">
+    <div class="q-dots" id="q-dots"></div>
+    <div style="display:flex;gap:10px;flex-shrink:0;">
+      <button class="btn-nav" id="btn-prev" onclick="navigate(-1)" disabled>← Prev</button>
+      <button class="btn-nav" id="btn-next" onclick="navigate(1)">Next →</button>
+      <button class="btn-submit" id="btn-submit" style="display:none" onclick="confirmSubmit()">Submit Test ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" class="screen">
+  <div class="trophy" id="trophy-icon">🏆</div>
+  <div class="result-name" id="result-name"></div>
+  <div class="score-big" id="score-big"></div>
+  <div class="score-denom">out of 100</div>
+  <div class="grade-badge" id="grade-badge"></div>
+  <p class="result-msg" id="result-msg"></p>
+  <div class="result-details">
+    <div class="r-card"><div class="rv" id="r-correct" style="color:var(--green)"></div><div class="rl">Correct</div></div>
+    <div class="r-card"><div class="rv" id="r-wrong" style="color:var(--red)"></div><div class="rl">Wrong</div></div>
+    <div class="r-card"><div class="rv" id="r-skipped" style="color:var(--muted)"></div><div class="rl">Skipped</div></div>
+    <div class="r-card"><div class="rv" id="r-time"></div><div class="rl">Time Used</div></div>
+  </div>
+  <div class="email-form">
+    <label>Send results to teacher's email</label>
+    <input type="email" id="teacher-email" placeholder="teacher@email.com" value="lawrencefreelanc@gmail.com" />
+    <button class="btn-gold" style="width:100%;margin-top:4px" onclick="sendEmail()">📧 Send Results to Teacher</button>
+    <div class="email-status" id="email-status" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ── TRUE/FALSE (1-30) ──
+  {q:"True or False: Point Value (PV) is assigned to each product and is used to qualify for bonuses, recognition, achievements and incentives.",type:"tf",a:0},
+  {q:"True or False: PV changes when the price of a product is adjusted.",type:"tf",a:1},
+  {q:"True or False: Personal Point Value (PPV) represents the total point value on all products you have purchased during the month.",type:"tf",a:0},
+  {q:"True or False: Qualified Point Value (QPV) is your personal PV only, without including sponsored distributors.",type:"tf",a:1},
+  {q:"True or False: Group Point Value (GPV) is your PV plus the QPV of all qualified directors in your first three levels.",type:"tf",a:0},
+  {q:"True or False: A Qualified Director must have a director title and accumulate at least 400 PV.",type:"tf",a:0},
+  {q:"True or False: Qualified Directors earn 25% of the Charge Sale Volume Bonus.",type:"tf",a:0},
+  {q:"True or False: Bonus Value (BV) changes along with price as cost and product price goes up over time.",type:"tf",a:0},
+  {q:"True or False: BV has a fixed relationship to PV on each product.",type:"tf",a:1},
+  {q:"True or False: Retail Price (RP) is the wholesale price that distributors purchase products.",type:"tf",a:1},
+  {q:"True or False: Distributor Price (DP) is the wholesale price of Neolife products for distributors.",type:"tf",a:0},
+  {q:"True or False: To become a Manager, you need your own personal PV and you are eligible to earn a Sale Volume Bonus.",type:"tf",a:0},
+  {q:"True or False: Leadership Development Bonus (LDB) is earned when you achieve the director title and produce a director in your team.",type:"tf",a:0},
+  {q:"True or False: Network Development Bonus (NDB) is earned when you achieve your personal goal.",type:"tf",a:1},
+  {q:"True or False: Neolife distributors are eligible to earn incentives including personal recognition gifts and travel rewards based on performance.",type:"tf",a:0},
+  {q:"True or False: Neolife was founded by a man named Jerry Brassfield in 1958.",type:"tf",a:0},
+  {q:"True or False: Neolife came to Nigeria in the year 2001.",type:"tf",a:0},
+  {q:"True or False: Wealth is defined as having an abundance of valuable resources or assets.",type:"tf",a:0},
+  {q:"True or False: The Manager recognition pin is Gold colour.",type:"tf",a:1},
+  {q:"True or False: The Director recognition pin is Silver colour.",type:"tf",a:0},
+  {q:"True or False: 5 Ruby means 5 gem red stones.",type:"tf",a:0},
+  {q:"True or False: A Full Distributor stage requires 250–499 PV and earns 3% bonus.",type:"tf",a:0},
+  {q:"True or False: A Manager stage requires 500–799 PV and earns 5% bonus.",type:"tf",a:0},
+  {q:"True or False: Senior Manager stage requires 1000–1799 PV and earns 10% bonus.",type:"tf",a:0},
+  {q:"True or False: Executive Manager stage requires 2000–2799 PV and earns 15–20% bonus.",type:"tf",a:0},
+  {q:"True or False: Director stage requires 4000+ PV and earns 25% bonus.",type:"tf",a:0},
+  {q:"True or False: Emerald Director requires 4000–10,000 PV.",type:"tf",a:0},
+  {q:"True or False: Sapphire Director requires 10,000–19,999 PV.",type:"tf",a:0},
+  {q:"True or False: One of the FHG vows is to 'Choose to be Proactive'.",type:"tf",a:0},
+  {q:"True or False: The FHG vow includes choosing to provide outstanding service for any business or buyer.",type:"tf",a:0},
+
+  // ── MULTIPLE CHOICE (31-100) ──
+  {q:"What does PV stand for in the Neolife Compensation Plan?",type:"mc",opts:["Price Value","Point Value","Personal Vow","Premium Value"],a:1},
+  {q:"What is PPV in the Neolife system?",type:"mc",opts:["Product Purchase Value","Personal Point Value","Percentage Pay Value","Premium Point Volume"],a:1},
+  {q:"QPV determines which of the following?",type:"mc",opts:["The retail price of products","The percentage of Sales Volume Bonus you earn each month","Your bonus from recruitment","Your team's total sales"],a:1},
+  {q:"What is GPV?",type:"mc",opts:["Government Paid Value","Group Point Value","General Product Valuation","Gross Profit Volume"],a:1},
+  {q:"GPV is calculated as your PV plus the QPV of all qualified directors in your first how many levels?",type:"mc",opts:["2 levels","3 levels","5 levels","4 levels"],a:1},
+  {q:"What is BV (Bonus Value)?",type:"mc",opts:["A fixed percentage of all sales","A currency value assigned to each product used to calculate bonuses","The total commission earned per month","A reward for recruiting new members"],a:1},
+  {q:"Where can BV values for each product be found?",type:"mc",opts:["On the product label","In the confidential price list","In the welcome letter","On the Neolife website"],a:1},
+  {q:"What is Retail Price (RP)?",type:"mc",opts:["The price Neolife charges distributors","The recommended price to use when selling to retail customers","The discounted price for loyal members","The international export price"],a:1},
+  {q:"What is Distributor Price (DP)?",type:"mc",opts:["The price for retail customers","The wholesale price of Neolife products for registered distributors","The bonus-included price for managers","The cost of the starter kit"],a:1},
+  {q:"Who can purchase products at Distributor Price?",type:"mc",opts:["Only Directors","All registered distributors","Retail customers only","Senior Managers and above"],a:1},
+  {q:"What bonus is earned when you achieve the director title AND produce a director in your team?",type:"mc",opts:["Network Development Bonus","Sales Volume Bonus","Leadership Development Bonus","Consistency Achievement Bonus"],a:2},
+  {q:"What does NDB stand for?",type:"mc",opts:["New Distributor Benefit","Network Development Bonus","Neolife Director Bonus","National Distribution Bonus"],a:1},
+  {q:"NDB is earned when you achieve which milestone?",type:"mc",opts:["Your first sale","A team bonus on your entire network","Your director promotion","Your first personal PV"],a:1},
+  {q:"In addition to the compensation plan, Neolife benefit distributors through which of the following?",type:"mc",opts:["Free products every month","Regular incentives, personal recognition gifts and travel rewards","Free car programme","Housing allowance"],a:1},
+  {q:"What is the minimum PV for a Qualified Director?",type:"mc",opts:["250 PV","400 PV","500 PV","1000 PV"],a:1},
+  {q:"A Qualified Director earns what percentage of the Charge Sale Volume Bonus?",type:"mc",opts:["5%","15%","25%","10%"],a:2},
+  {q:"Neolife was founded in which year?",type:"mc",opts:["1968","1950","1958","1975"],a:2},
+  {q:"Who founded Neolife?",type:"mc",opts:["Kendra Brassfield","Jerry Brassfield","Abdurasheed Abdullahi","Mr. Solu"],a:1},
+  {q:"Neolife was passed on to whose daughter?",type:"mc",opts:["Sandra Brassfield","Kendra Brassfield","Rachel Brassfield","Monica Brassfield"],a:1},
+  {q:"In what year did Neolife come to Nigeria?",type:"mc",opts:["1998","2005","2001","2010"],a:2},
+  {q:"What is Wealth defined as?",type:"mc",opts:["Having a lot of money","Having an abundance of valuable resources or assets","Owning a big house","Being a Director in Neolife"],a:1},
+  {q:"What colour is the Manager recognition pin?",type:"mc",opts:["Gold","Silver","Green","Blue"],a:2},
+  {q:"What colour is the Director recognition pin?",type:"mc",opts:["Gold","Green","Silver","Red"],a:2},
+  {q:"What does '5 Ruby' represent?",type:"mc",opts:["5 Gold coins","5 gem red stones","5 sales in a month","5 team members"],a:1},
+  {q:"What is the PV range for Full Distributors?",type:"mc",opts:["100–249 PV","250–499 PV","500–799 PV","1000–1799 PV"],a:1},
+  {q:"What bonus percentage do Full Distributors earn?",type:"mc",opts:["5%","10%","1%","3%"],a:3},
+  {q:"What is the PV range for Manager stage?",type:"mc",opts:["250–499 PV","500–799 PV","1000–1799 PV","2000–2799 PV"],a:1},
+  {q:"What bonus does a Manager earn?",type:"mc",opts:["3%","10%","5%","15%"],a:2},
+  {q:"Senior Manager requires which PV range?",type:"mc",opts:["500–799 PV","2000–2799 PV","1000–1799 PV","4000+ PV"],a:2},
+  {q:"What bonus percentage does a Senior Manager earn?",type:"mc",opts:["5%","10%","15%","25%"],a:1},
+  {q:"Executive Manager requires what PV range?",type:"mc",opts:["1000–1799 PV","2000–2799 PV","4000+ PV","500–799 PV"],a:1},
+  {q:"What is the bonus percentage for Executive Manager?",type:"mc",opts:["10%","25%","3%","15–20%"],a:3},
+  {q:"Director level requires at least how much PV?",type:"mc",opts:["2000 PV","3000 PV","4000 PV","5000 PV"],a:2},
+  {q:"What bonus percentage does a Director earn?",type:"mc",opts:["15%","20%","25%","30%"],a:2},
+  {q:"Emerald Director PV range is:",type:"mc",opts:["2000–4000 PV","4000–10,000 PV","10,000–19,999 PV","20,000+ PV"],a:1},
+  {q:"Sapphire Director PV range is:",type:"mc",opts:["4000–9999 PV","10,000–19,999 PV","20,000–29,999 PV","5000–9999 PV"],a:1},
+  {q:"How many documents are included in the Neolife welcome package (31 Documents)?",type:"mc",opts:["25","28","31","35"],a:2},
+  {q:"Which of the following is NOT listed among the 31 welcome documents?",type:"mc",opts:["Congratulatory letter","Compensation letter","Product catalog","Bank statement"],a:3},
+  {q:"PV values for each product can be found in which document?",type:"mc",opts:["The retail price list","The confidential price list","The policy and procedure","The getting started kit"],a:1},
+  {q:"What does LDB stand for?",type:"mc",opts:["Long-term Distributor Benefit","Leadership Development Bonus","Loyal Distributor Bonus","Level Distribution Benefit"],a:1},
+  {q:"What does CAB stand for in Neolife bonuses?",type:"mc",opts:["Certified Achiever Bonus","Consistency Achievement Bonus","Compulsory Advancement Bonus","Career Advancement Benefit"],a:1},
+  {q:"What does TI stand for in Neolife bonus types?",type:"mc",opts:["Team Incentive","Travel Incentive","Total Income","Temporary Income"],a:1},
+  {q:"What does DDB stand for?",type:"mc",opts:["Direct Distributor Bonus","Diamond Development Bonus","Downline Distributor Benefit","Director Distribution Bonus"],a:1},
+  {q:"Which of the FHG vows says you will give your time to others?",type:"mc",opts:["Choose to be Proactive","Choose to sacrifice my time for the wellbeing of others in my life","Choose to live on excellent personal life","Choose to love my family"],a:1},
+  {q:"The FHG vow about service states: Choose to provide an outstanding service for any ___",type:"mc",opts:["person or partner","business or buyer","team or trainer","client or colleague"],a:1},
+  {q:"According to the FHG vows, what should you choose regarding your personal life?",type:"mc",opts:["Choose to be wealthy","Choose to live on excellent personal life","Choose to work harder","Choose to lead a team"],a:1},
+  {q:"One FHG mindset principle says: 'I choose to be a team ___ '",type:"mc",opts:["leader","player","builder","director"],a:1},
+  {q:"According to the notes, one should choose to see the positive side of every ___",type:"mc",opts:["person","situation","business","challenge"],a:1},
+  {q:"The mindset principle says: 'I choose to live a life of ___'",type:"mc",opts:["wealth","success","integrity","happiness"],a:2},
+  {q:"According to the notes, one should choose to treat every team member's ___",type:"mc",opts:["goals honestly","strangers and friends with respect","success as motivation","downline with care"],a:1},
+  {q:"The mindset states: choose to understand people who don't like me and continue to treat me with ___",type:"mc",opts:["respect","kindness","integrity","patience"],a:0},
+  {q:"The notes state: 'I choose to emulate people who chose good and educate ___'",type:"mc",opts:["my children","bad people","my team","my downline"],a:1},
+  {q:"According to the notes, success is measured not just by money but by?",type:"mc",opts:["Rank achieved","The count of people helped directly or indirectly","Total products sold","Number of directors trained"],a:1},
+  {q:"The notes say: 'I choose to offer people opportunity generously and will never expect anything in ___'",type:"mc",opts:["advance","return","exchange","time"],a:1},
+  {q:"The FHG vow about love says: I choose to love my family. I choose to offer people opportunity and also love ___",type:"mc",opts:["my upline","everybody else unconditionally","my team members only","the world"],a:1},
+  {q:"According to the notes, the attitude says: 'I am not a bad ___'",type:"mc",opts:["seller","person","leader","distributor"],a:1},
+  {q:"The notes mention: 'I choose to be doing what is right instead of being ___'",type:"mc",opts:["watched","monitored","followed","praised"],a:1},
+  {q:"The notes state you should build a smooth relationship with ___",type:"mc",opts:["your upline only","everyone coming into your life","your team only","directors only"],a:1},
+  {q:"The mindset says: 'I choose to circumstance life with positive mind. Choose to see the positive side of every situation and ___'",type:"mc",opts:["never give up","handle it","move on","ignore it"],a:1},
+  {q:"The Neolife status levels, in order from lowest to highest, begin with:",type:"mc",opts:["Manager, Director, Distributor","Distributor, Manager, Senior Manager","Senior Manager, Manager, Distributor","Director, Distributor, Manager"],a:1},
+  {q:"When you first register as a Neolife distributor, you become eligible for which items?",type:"mc",opts:["ID Card, ID number, product catalog, cheque, website","Only a congratulatory letter","Just the product kit","Only the compensation letter"],a:0},
+  {q:"Which bonus in Neolife is earned based on your entire network once you achieve team milestones?",type:"mc",opts:["Sales Volume Bonus","Leadership Development Bonus","Network Development Bonus","Consistency Achievement Bonus"],a:2},
+  {q:"BV values for each product can be found in the:",type:"mc",opts:["Welcome letter","Retail price list","Confidential price list","Policy and procedure"],a:2},
+  {q:"The Sale Volume Bonus (SVB) is earned when you have your own personal PV and become a:",type:"mc",opts:["Distributor","Full distributor only","Manager","Director"],a:2},
+  {q:"Which of these is a bonus type in Neolife?",type:"mc",opts:["Housing Bonus","Car Bonus","Travel Incentive (TI)","Fuel Allowance"],a:2},
+  {q:"A distributor who achieves the Emerald Director level has PV between:",type:"mc",opts:["2000–4000","4000–10,000","1000–4000","5000–10,000"],a:1},
+  {q:"The recognition system in Neolife uses PINS. Which colour pin represents a Manager?",type:"mc",opts:["Silver","Gold","Green","Blue"],a:2},
+  {q:"According to the notes, personal success should help both your ___",type:"mc",opts:["upline and downline","family and team members","business and income","rank and recognition"],a:1},
+  {q:"The FHG stands for which global network?",type:"mc",opts:["Faithful Health Group","Faithroin Global","First Health Group","Faith Hope Group"],a:1},
+  {q:"One of the four FHG vows is to 'Choose to be ___'",type:"mc",opts:["Rich","Successful","Proactive","Famous"],a:2},
+  {q:"According to the compensation plan notes, as price goes up over time, what also goes up?",type:"mc",opts:["BV only","Your income","The number of downlines","PV values"],a:1},
+  {q:"QPV is used to determine which of the following?",type:"mc",opts:["Your bonus percentage from Sales Volume","Your rank only","Your travel reward","Your starter kit eligibility"],a:0},
+  {q:"The notes describe that PV doesn't change when price is adjusted. This is to protect against:",type:"mc",opts:["Currency fluctuation","Inflation affecting income","Recruitment challenges","Price wars among distributors"],a:1},
+  {q:"What is a 'downline' in network marketing?",type:"mc",opts:["A distributor who joined before you","People you have sponsored and their recruits below you","Your upline's organization","The Neolife head office"],a:1},
+  {q:"The bonus earned on the qualified directors' development in your team or downline as part of LDB refers to:",type:"mc",opts:["Personal PV increase","Leadership Development Bonus on other qualified directors in your downline","Sales Volume Bonus","Network Development Bonus"],a:1},
+  {q:"The FHG vow includes choosing to spend your time in a way that is successful in ___",type:"mc",opts:["business only","your life","the team","the market"],a:1},
+  {q:"According to the notes, what should you choose when it comes to negative people?",type:"mc",opts:["Avoid them entirely","Choose in making other people far by our life","Argue with them","Recruit them anyway"],a:1},
+  {q:"Which document in the Neolife welcome package shows you how to get started?",type:"mc",opts:["Compensation letter","Getting started kit / guide","Policy & Procedure","Retail price list"],a:1},
+  {q:"A network marketer who chooses to be proactive means they:",type:"mc",opts:["Wait for upline instructions","Take initiative and act without being pushed","Only work when motivated","React to problems after they happen"],a:1},
+  {q:"In Neolife, your QPV is calculated from your personal PV plus the PV of distributors you have sponsored up to the next ___",type:"mc",opts:["Emerald Director","Qualified Director","Senior Manager","5-level downline"],a:1},
+  {q:"Which of the following correctly describes Distributor Price (DP)?",type:"mc",opts:["It is higher than retail price","It is the wholesale price for registered distributors","It is the price for VIP customers","It changes monthly based on BV"],a:1},
+  {q:"The FHG vow about integrity says you choose to live a life of integrity and choose to be ___",type:"mc",opts:["rich","monitored","doing what is right instead of being monitored","respected by everyone"],a:2},
+  {q:"According to the notes, what type of people should you emulate?",type:"mc",opts:["Rich people","Famous people","People who chose good","People with large downlines"],a:2},
+  {q:"The mindset principle of treating team members includes treating both strangers and ___",type:"mc",opts:["competitors","friends","customers","all of the above"],a:1},
+  {q:"The Sapphire Director level PV range starts from:",type:"mc",opts:["4,000 PV","5,000 PV","10,000 PV","20,000 PV"],a:2},
+  {q:"The notes mention that success is based on helping people — whether directly, indirectly, or via ___",type:"mc",opts:["social media","money","organisation","recruitment"],a:2},
+  {q:"Neolife products' BV list is found in the same document as:",type:"mc",opts:["Recognition pins","Confidential price list","Compensation letter","Policy and procedure"],a:1},
+  {q:"The number of welcome documents given to a new Neolife distributor is:",type:"mc",opts:["20","25","31","40"],a:2},
+  {q:"Which of the following is one of the four FHG vows?",type:"mc",opts:["Choose to compete aggressively","Choose to live on excellent personal life","Choose to recruit 10 people per month","Choose to attend all meetings"],a:1},
+  {q:"The notes say your mentors helped you — directly or indirectly — but they will never expect anything in ___",type:"mc",opts:["writing","advance","return","time"],a:2},
+  {q:"NDB qualification is achieved when you build a team strong enough to earn a network bonus on your ___",type:"mc",opts:["personal sales","entire network","first 3 levels only","director title"],a:1},
+  {q:"A positive mindset in network marketing means choosing to see the ___ side of every situation.",type:"mc",opts:["negative","financial","positive","difficult"],a:2},
+  {q:"What is the first step to earning Sales Volume Bonus (SVB) in Neolife?",type:"mc",opts:["Recruit 5 people","Become a Director","Have your own personal PV and become a Manager","Achieve 4000 PV"],a:2},
+  {q:"Which Neolife stage has the highest bonus percentage listed in the notes?",type:"mc",opts:["Emerald Director","Senior Manager","Executive Manager","Director at 25%"],a:3},
+  {q:"The FHG community's vow about service says: 'Choose to provide an outstanding service for any business or ___'",type:"mc",opts:["team","buyer","client","partner"],a:1},
+];
+
+let currentQ = 0;
+let answers = new Array(100).fill(null);
+let timerInterval = null;
+let secondsLeft = 50 * 60;
+let startTime = null;
+let studentName = "";
+
+function startTest(){
+  const name = document.getElementById('student-name').value.trim();
+  if(!name){ alert('Please enter your full name to begin.'); return; }
+  studentName = name;
+  document.getElementById('header-name').textContent = name;
+  showScreen('test-screen');
+  renderQuestion();
+  renderDots();
+  startTimer();
+  startTime = Date.now();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[currentQ];
+  document.getElementById('q-counter').textContent = `Question ${currentQ+1} of 100`;
+  document.getElementById('q-text').textContent = `${currentQ+1}. ${q.q}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ+1)/100)*100}%`;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  let opts = q.type === 'tf' ? ['True','False'] : q.opts;
+  opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentQ] === i ? ' selected' : '');
+    div.innerHTML = `<div class="opt-letter">${String.fromCharCode(65+i)}</div><span>${opt}</span>`;
+    div.onclick = () => selectAnswer(i);
+    container.appendChild(div);
+  });
+
+  document.getElementById('btn-prev').disabled = currentQ === 0;
+  document.getElementById('btn-next').style.display = currentQ < 99 ? 'inline-block' : 'none';
+  document.getElementById('btn-submit').style.display = currentQ === 99 ? 'inline-block' : 'none';
+  updateDots();
+}
+
+function selectAnswer(i){
+  answers[currentQ] = i;
+  renderQuestion();
+  updateDots();
+}
+
+function navigate(dir){
+  currentQ = Math.max(0, Math.min(99, currentQ + dir));
+  renderQuestion();
+}
+
+function renderDots(){
+  const container = document.getElementById('q-dots');
+  container.innerHTML = '';
+  for(let i=0;i<100;i++){
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    dot.textContent = i+1;
+    dot.onclick = () => { currentQ = i; renderQuestion(); };
+    container.appendChild(dot);
+  }
+}
+
+function updateDots(){
+  const dots = document.querySelectorAll('.q-dot');
+  dots.forEach((dot, i) => {
+    dot.className = 'q-dot';
+    if(answers[i] !== null) dot.classList.add('answered');
+    if(i === currentQ) dot.classList.add('current');
+  });
+}
+
+function startTimer(){
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60).toString().padStart(2,'0');
+    const s = (secondsLeft%60).toString().padStart(2,'0');
+    const el = document.getElementById('timer');
+    el.textContent = `${m}:${s}`;
+    el.className = 'timer-box';
+    if(secondsLeft <= 300) el.classList.add('warning');
+    if(secondsLeft <= 60) el.classList.add('danger');
+    if(secondsLeft <= 0){ clearInterval(timerInterval); submitTest(); }
+  }, 1000);
+}
+
+function confirmSubmit(){
+  const unanswered = answers.filter(a => a===null).length;
+  const msg = unanswered > 0
+    ? `You have ${unanswered} unanswered question(s). Are you sure you want to submit?`
+    : 'Are you sure you want to submit your test?';
+  if(confirm(msg)) submitTest();
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  const timeUsed = Math.round((Date.now() - startTime)/1000);
+  const mm = Math.floor(timeUsed/60).toString().padStart(2,'0');
+  const ss = (timeUsed%60).toString().padStart(2,'0');
+
+  let correct = 0, wrong = 0, skipped = 0;
+  QUESTIONS.forEach((q,i) => {
+    if(answers[i] === null) skipped++;
+    else if(answers[i] === q.a) correct++;
+    else wrong++;
+  });
+
+  const score = correct;
+  document.getElementById('result-name').textContent = studentName;
+  document.getElementById('score-big').textContent = score;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-skipped').textContent = skipped;
+  document.getElementById('r-time').textContent = `${mm}:${ss}`;
+
+  const badge = document.getElementById('grade-badge');
+  const msg = document.getElementById('result-msg');
+  const trophy = document.getElementById('trophy-icon');
+  if(score >= 75){ badge.textContent='EXCELLENT — A'; badge.className='grade-badge grade-A'; msg.textContent='Outstanding performance! You have a strong understanding of the Neolife compensation plan and FHG principles.'; trophy.textContent='🏆'; }
+  else if(score >= 60){ badge.textContent='GOOD — B'; badge.className='grade-badge grade-B'; msg.textContent='Good work! You have a solid grasp of the content. Review the areas you missed to strengthen your knowledge.'; trophy.textContent='🥈'; }
+  else if(score >= 45){ badge.textContent='FAIR — C'; badge.className='grade-badge grade-C'; msg.textContent='Fair attempt. You understand some key concepts but need more study, especially on the compensation plan terminology.'; trophy.textContent='🥉'; }
+  else { badge.textContent='NEEDS IMPROVEMENT — F'; badge.className='grade-badge grade-F'; msg.textContent='Keep studying! Focus on the definitions, stages, bonus types, and FHG vows. You can do it!'; trophy.textContent='📚'; }
+
+  showScreen('result-screen');
+  window._resultData = { name: studentName, score, correct, wrong, skipped, time: `${mm}:${ss}`, date: new Date().toLocaleString() };
+}
+
+function sendEmail(){
+  const email = document.getElementById('teacher-email').value.trim();
+  if(!email || !email.includes('@')){ alert('Please enter a valid email address.'); return; }
+  const d = window._resultData;
+  const statusEl = document.getElementById('email-status');
+  statusEl.style.display = 'block';
+  statusEl.className = 'email-status sending';
+  statusEl.textContent = '⏳ Sending results...';
+
+  // Use EmailJS free tier
+  const serviceId = 'service_fhgtest';
+  const templateId = 'template_fhgtest';
+
+  const body = {
+    service_id: serviceId,
+    template_id: templateId,
+    user_id: 'user_placeholder',
+    template_params: {
+      to_email: email,
+      student_name: d.name,
+      score: d.score,
+      correct: d.correct,
+      wrong: d.wrong,
+      skipped: d.skipped,
+      time_used: d.time,
+      test_date: d.date,
+      grade: document.getElementById('grade-badge').textContent,
+    }
+  };
+
+  // Fallback: use mailto since EmailJS requires account setup
+  const subject = encodeURIComponent(`FHG Neolife Test Result - ${d.name}`);
+  const bodyText = encodeURIComponent(
+    `STUDENT TEST RESULT\n` +
+    `====================\n` +
+    `Name: ${d.name}\n` +
+    `Score: ${d.score}/100\n` +
+    `Grade: ${document.getElementById('grade-badge').textContent}\n` +
+    `Correct: ${d.correct}\n` +
+    `Wrong: ${d.wrong}\n` +
+    `Skipped: ${d.skipped}\n` +
+    `Time Used: ${d.time}\n` +
+    `Date: ${d.date}\n` +
+    `====================\n` +
+    `Sent from FHG Neolife Online Test`
+  );
+
+  // Open mailto
+  window.location.href = `mailto:${email}?subject=${subject}&body=${bodyText}`;
+
+  setTimeout(() => {
+    statusEl.className = 'email-status sent';
+    statusEl.textContent = `✅ Your mail app has opened. Send the email to ${email} to complete delivery. If it didn't open, copy the result above manually.`;
+  }, 800);
+}
+</script>
+</body>
+</html>
